@@ -53,19 +53,10 @@ app.get("/api/pilots/:serialNumber", (request, response) => {
 		.then((response) => {
 			console.log("response", response);
 			console.log("response.body", response.body);
-			return response.text();
+			return response.json();
 		})
 		.then((data) => {
 			if (data) {
-				// xml2js.parseString(data, (err, result) => {
-				// 	console.log("data", data);
-				// 	console.log("result", result);
-				// 	console.log("err", err);
-
-				// 	const json = JSON.stringify(result, null, 4);
-				// 	console.log("json", json);
-				// 	response.json(json);
-				// });
 				console.log("data", data);
 
 				response.json(data);
@@ -73,6 +64,7 @@ app.get("/api/pilots/:serialNumber", (request, response) => {
 		});
 });
 
+// catch requests made to non-existent routes
 const unknownEndpoint = (request, response) => {
 	response.status(404).send({ error: "unknown endpoint" });
 };
