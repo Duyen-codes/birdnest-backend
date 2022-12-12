@@ -1,1 +1,1 @@
-GET http://assignments.reaktor.com/birdnest/pilots/SN-H4NWb9KdNd
+GET http://localhost:3001/api/pilots/SN-H4NWb9KdNd
