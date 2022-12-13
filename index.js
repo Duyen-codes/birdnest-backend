@@ -50,6 +50,7 @@ app.get("/api/drones", async (req, res) => {
 
 				const mappedList = captureList.map(async (capture) => {
 					const captureToSave = new Capture({
+						createdAt: capture.snapshotTimestamp,
 						snapshotTimestamp: capture.snapshotTimestamp,
 
 						drone: capture.drone.map((item) => {

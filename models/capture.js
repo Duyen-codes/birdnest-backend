@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const captureSchema = new mongoose.Schema({
+const captureSchema = mongoose.Schema({
+	createdAt: { type: Date, expires: 600 },
 	snapshotTimestamp: Array,
 	drone: [
 		{
