@@ -95,6 +95,9 @@ app.get("/api/pilots/:serialNumber", (request, response) => {
 				// console.log("data", data);
 				response.json(data);
 			}
+		})
+		.catch((error) => {
+			return error;
 		});
 });
 
