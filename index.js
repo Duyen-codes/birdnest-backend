@@ -90,14 +90,14 @@ app.get("/api/drones", async (req, res) => {
 					console.log("dataDB", dataDB.length);
 
 					// console.log("captureObjToSave", captureObjToSave);
-					const savedCaptures = await captureObjToSave.save();
-					// console.log("savedCaptures", savedCaptures);
+					const savedCapture = await captureObjToSave.save();
+					console.log("savedCapture", savedCapture);
 
 					const dataToReturn = await Capture.find({});
 					// console.log("dataToReturn", dataToReturn);
 					// console.log("dataToReturn length", dataToReturn.length);
 
-					res.json(dataToReturn);
+					res.json({ dataToReturn, recentSavedCapture: savedCapture });
 				});
 				// console.log("after saving to db");
 			});
