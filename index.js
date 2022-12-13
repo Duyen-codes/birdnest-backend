@@ -9,14 +9,14 @@ const Capture = require("./models/capture");
 
 const app = express();
 
-const requestLogger = (request, response, next) => {
-	console.log("Method:", request.method);
-	console.log("Path:  ", request.path);
-	console.log("Body:  ", request.body);
-	console.log("---");
-	next();
-};
-app.use(requestLogger);
+// const requestLogger = (request, response, next) => {
+// 	console.log("Method:", request.method);
+// 	console.log("Path:  ", request.path);
+// 	console.log("Body:  ", request.body);
+// 	console.log("---");
+// 	next();
+// };
+// app.use(requestLogger);
 app.use(cors());
 
 const MONGODB_URI =
@@ -37,7 +37,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/drones", async (req, res) => {
-	console.log("start of req, res callback");
+	// console.log("start of req, res callback");
 	let something = await axios
 		.get("http://assignments.reaktor.com/birdnest/drones")
 		.then((response) => {
@@ -45,11 +45,12 @@ app.get("/api/drones", async (req, res) => {
 			let data = response.data;
 			// console.log("data", data);
 			xml2js.parseString(data, { mergeAttrs: true }, (err, result) => {
-				console.log("result", result);
-				const captureList = result.report.capture;
+				// console.log("result", result);
+				const captureArr = result.report.capture;
+				// console.log("captureArr", captureArr);
 
-				const mappedList = captureList.map(async (capture) => {
-					const captureToSave = new Capture({
+				const mappedList = captureArr.map(async (capture) => {
+					const captureObjToSave = new Capture({
 						createdAt: capture.snapshotTimestamp,
 						snapshotTimestamp: capture.snapshotTimestamp,
 
@@ -62,7 +63,34 @@ app.get("/api/drones", async (req, res) => {
 						}),
 					});
 
-					const savedCaptures = await captureToSave.save();
+					// filter duplicates drone item in capture object before saving to DB
+					// get all data from database
+					const dataDB = await Capture.find({});
+
+					// loop through dataDB and remove drone object that has same item as in captureObjToSave.drone with captureObjToSave object's drone array property
+
+					const result = dataDB.filter((captureObject) => {
+						return captureObject.drone.filter(function (droneObject) {
+							// console.log("drone", drone);
+							return !captureObjToSave.drone.includes(droneObject);
+							// return captureObjToSave.drone.some(function (item) {
+							// 	// console.log("item", item);
+							// 	// console.log("item serialNumber", item.serialNumber[0]);
+							// 	// console.log(
+							// 	// 	"captureObject drone serialNumber",
+							// 	// 	captureObject.drone.serialNumber,
+							// 	// );
+							// 	console.log(item.serialNumber[0] === drone.serialNumber[0]);
+							// 	return item.serialNumber[0] === drone.serialNumber[0];
+							// });
+						});
+					});
+
+					console.log("result.length", result.length);
+					console.log("dataDB", dataDB.length);
+
+					// console.log("captureObjToSave", captureObjToSave);
+					const savedCaptures = await captureObjToSave.save();
 					// console.log("savedCaptures", savedCaptures);
 
 					const dataToReturn = await Capture.find({});
@@ -71,11 +99,11 @@ app.get("/api/drones", async (req, res) => {
 
 					res.json(dataToReturn);
 				});
-				console.log("after saving to db");
+				// console.log("after saving to db");
 			});
 		});
 
-	console.log("end of req, res callback");
+	// console.log("end of req, res callback");
 });
 
 app.get("/api/pilots/:serialNumber", (request, response) => {
