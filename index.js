@@ -11,6 +11,9 @@ const Capture = require("./models/capture");
 
 const app = express();
 
+const logger = require("./utils/logger");
+const config = require("./utils/config");
+
 // const requestLogger = (request, response, next) => {
 // 	console.log("Method:", request.method);
 // 	console.log("Path:  ", request.path);
@@ -21,7 +24,7 @@ const app = express();
 // app.use(requestLogger);
 app.use(cors());
 app.use(express.static("build"));
-const url = process.env.MONGODB_URI;
+const url = config.MONGODB_URI;
 
 mongoose.set("strictQuery", true);
 mongoose
@@ -45,7 +48,6 @@ app.get("/api/drones", async (req, res, next) => {
 
 			xml2js.parseString(data, { mergeAttrs: true }, async (err, result) => {
 				const captureObject = result.report.capture[0];
-				// console.log("captureObject", captureObject);
 
 				const captureObjToSave = new Capture({
 					createdAt: captureObject.snapshotTimestamp,
@@ -71,17 +73,13 @@ app.get("/api/drones", async (req, res, next) => {
 
 app.get("/api/pilots/:serialNumber", (request, response, next) => {
 	const serialNumber = request.params.serialNumber;
-	// console.log("serialNumber", serialNumber);
 
 	fetch(`http://assignments.reaktor.com/birdnest/pilots/${serialNumber}`)
 		.then((response) => {
-			// console.log("response", response);
-			// console.log("response.body", response.body);
 			return response.json();
 		})
 		.then((data) => {
 			if (data) {
-				// console.log("data", data);
 				response.json(data);
 			} else {
 				response.status(404).end();
@@ -110,7 +108,7 @@ app.use(unknownEndpoint);
 
 // handler of requests with result to errors
 app.use(errorHandler);
-const PORT = process.env.PORT || 3001;
+const PORT = config.PORT || 3001;
 app.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`);
+	logger.info(`Server running on port ${PORT}`);
 });
