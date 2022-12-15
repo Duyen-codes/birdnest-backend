@@ -68,7 +68,7 @@ app.get("/api/drones", async (req, res) => {
 		});
 }); // end of route callback
 
-app.get("/api/pilots/:serialNumber", (request, response) => {
+app.get("/api/pilots/:serialNumber", (request, response, next) => {
 	const serialNumber = request.params.serialNumber;
 	// console.log("serialNumber", serialNumber);
 
@@ -82,19 +82,33 @@ app.get("/api/pilots/:serialNumber", (request, response) => {
 			if (data) {
 				// console.log("data", data);
 				response.json(data);
+			} else {
+				response.status(404).end();
 			}
 		})
 		.catch((error) => {
-			return error;
+			console.log(error);
+			// response.status(400).send({ error: "malformatted serialNumber" });
+			next(error);
 		});
 });
 
+const errorHandler = (error, request, response, next) => {
+	console.error(error.message);
+	if (error.name === "FetchError") {
+		return response.status(400).end({ error: "malformatted serialNumber" });
+	}
+	next(error);
+};
 // catch requests made to non-existent routes
 const unknownEndpoint = (request, response) => {
 	response.status(404).send({ error: "unknown endpoint" });
 };
 
 app.use(unknownEndpoint);
+
+// handler of requests with result to errors
+app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
