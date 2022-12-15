@@ -1,4 +1,4 @@
-const http = require("http");
+require("dotenv").config();
 
 const express = require("express");
 const xml2js = require("xml2js");
@@ -21,15 +21,13 @@ const app = express();
 // app.use(requestLogger);
 app.use(cors());
 app.use(express.static("build"));
-
-const MONGODB_URI =
-	"mongodb+srv://birdNestApp:birdNestApp@cluster0.xdsqopm.mongodb.net/birdNestApp?retryWrites=true&w=majority";
+const url = process.env.MONGODB_URI;
 
 mongoose.set("strictQuery", true);
 mongoose
-	.connect(MONGODB_URI, { useNewUrlParser: true })
-	.then(() => {
-		console.log("connected to", MONGODB_URI);
+	.connect(url, { useNewUrlParser: true })
+	.then((result) => {
+		console.log("connected to MongoDB");
 	})
 	.catch((error) => {
 		console.log("error connecting to MongoDB: ", error.message);
