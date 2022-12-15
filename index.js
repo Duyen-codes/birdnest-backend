@@ -20,6 +20,7 @@ const app = express();
 // };
 // app.use(requestLogger);
 app.use(cors());
+app.use(express.static("build"));
 
 const MONGODB_URI =
 	"mongodb+srv://birdNestApp:birdNestApp@cluster0.xdsqopm.mongodb.net/birdNestApp?retryWrites=true&w=majority";
