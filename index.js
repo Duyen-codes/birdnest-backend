@@ -37,7 +37,7 @@ app.get("/", (request, response) => {
 	response.send("<h1>Hello world</h1>");
 });
 
-app.get("/api/drones", async (req, res) => {
+app.get("/api/drones", async (req, res, next) => {
 	let something = await axios
 		.get("http://assignments.reaktor.com/birdnest/drones")
 		.then((response) => {
@@ -65,7 +65,8 @@ app.get("/api/drones", async (req, res) => {
 
 				res.json({ captures: dataToReturn, recentSavedCapture: savedCapture });
 			});
-		});
+		})
+		.catch((error) => next(error));
 }); // end of route callback
 
 app.get("/api/pilots/:serialNumber", (request, response, next) => {
