@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const captureSchema = mongoose.Schema({
 	createdAt: { type: Date, expires: "10m", required: true },
-	snapshotTimestamp: { type: Array, required: true },
+	snapshotTimestamp: Array,
 	drone: [
 		{
-			serialNumber: { type: Array, required: true },
-			positionX: { type: Array, required: true },
-			positionY: { type: Array, required: true },
+			serialNumber: Array,
+			positionX: Array,
+			positionY: Array,
 		},
 	],
 });
