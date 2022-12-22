@@ -4,7 +4,10 @@ A web application that helps tracking violations of drones and their pilots
 
 ## Links
 
+The app is deployed in 2 platforms: fly.io and cyclic
+
 - View Demo: [https://eager-veil-moth.cyclic.app/](https://eager-veil-moth.cyclic.app/)
+- Demo on fly.io: [https://weathered-leaf-9331.fly.dev/](https://weathered-leaf-9331.fly.dev/)
 
 ## Features
 
